@@ -1,10 +1,10 @@
 # Convert Case
 
-Converts to and from various cases.
+A command line utility to convert to and from various cases.
 
 ## Usage
 
-Installing `convert_case` gives you the `ccase` executable.
+Once installed, you can start converting strings to any case.
 ```
 $ ccase -t title super_mario_64
 Super Mario 64
@@ -56,12 +56,12 @@ curl https://sh.rustup.rs -sSf | sh
 ```
 Once cargo is installed,
 ```
-cargo install convert_case
+cargo install ccase
 ```
 
-## Rust Library
+## Rust Library `convert_case`
 
-Convert case was written in Rust and is ready to be used inline with your rust code as a library.  You can read the API documentation on [docs.rs](https://docs.rs/convert_case/).
+`ccase` was written in Rust and is ready to be used inline with your rust code as a library.  You can read the `convert_case` documentation on [docs.rs](https://docs.rs/convert_case/).
 
 ## Cases
 
