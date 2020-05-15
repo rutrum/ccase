@@ -1,6 +1,6 @@
-# Convert Case
+# ccase
 
-A command line utility to convert to and from various cases.
+A command line utility to convert to and from various cases.  `ccase` is short for "convert case."
 
 ## Usage
 
@@ -16,7 +16,7 @@ $ ccase -t camel "convert to camel"
 convertToCamel
 ```
 
-By default `convert_case` will determine word boundaries based on all hyphens, spaces, underscores, and changes in capitalization.  You can also supply a parsing method by supplying a case with the `--from -f` option for more accuracy.
+By default `ccase` will determine word boundaries based on all hyphens, spaces, underscores, and changes in capitalization.  You can also supply a parsing method by supplying a case with the `--from -f` option for more accuracy.
 ```
 $ ccase -t upper "grimaldi-2003_discrete_pdf"
 GRIMALDI 2003 DISCRETE PDF
@@ -27,7 +27,7 @@ GRIMALDI 2003_DISCRETE_PDF
 
 ## Edge Cases
 
-Convert case can handle acroynms.
+`ccase` can handle acroynms.
 ```
 $ ccase -t snake IOStream
 io_stream
