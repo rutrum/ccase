@@ -2,7 +2,6 @@ use clap::{App, AppSettings, Arg};
 //use std::io::{self, BufRead};
 use convert_case::{Case, Casing};
 use std::convert::TryFrom;
-use strum::IntoEnumIterator;
 
 fn main() {
     let matches = App::new("Convert Case")
@@ -104,7 +103,7 @@ fn is_valid_case(s: String) -> Result<(), String> {
 
 fn list_cases() {
     println!("Valid cases:");
-    for case in Case::iter() {
+    for case in Case::all_cases() {
         println!("    {:<16} {}", format!("{:?}", case), case.name_in_case());
     }
 }

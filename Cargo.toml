@@ -1,6 +1,6 @@
 [package]
 name = "ccase"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["David Purdum <purdum41@gmail.com>"]
 edition = "2018"
 description = "Command line interface to convert strings into any case"
@@ -19,7 +19,5 @@ lto = true
 panic = 'abort'
 
 [dependencies]
-convert_case = "0.3.0"
+convert_case = "^0.3.2"
 clap = "2.33.0"
-strum = "0.18.0"
-strum_macros = "0.18.0"
