@@ -1,3 +1,7 @@
+# This repo has moved!
+
+It is now located alongside the `convert_case` library.  You can read the most recent ccase [README at it's new location.](https://github.com/rutrum/convert-case/tree/master/ccase)
+
 # ccase
 
 A command line utility to convert to and from various cases.  `ccase` is short for "convert case."
