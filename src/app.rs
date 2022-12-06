@@ -1,4 +1,4 @@
-use clap::{crate_version, Arg, Command, Error, error::ErrorKind};
+use clap::{crate_version, Arg, Command, Error, error::ErrorKind, builder::StyledStr};
 use crate::{CaseExtension};
 use convert_case::{Case, Casing};
 
@@ -8,6 +8,14 @@ pub fn build() -> Command {
         .about("Converts between string cases.")
         .arg_required_else_help(true)
         .args(args::all())
+        .override_usage(usage())
+}
+
+fn usage() -> StyledStr {
+    StyledStr::from(
+        "\x1b[1mccase --to\x1b[0m <case> <input>\n       \
+         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>"
+    )
 }
 
 fn case_value_parser(s: &str) -> Result<Case, Error> {
