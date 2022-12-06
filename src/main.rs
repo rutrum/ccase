@@ -24,7 +24,7 @@ fn main() {
 #[cfg(test)]
 mod test {
     use assert_cmd::{assert::Assert, Command};
-    use predicates::prelude::*;
+    use predicates::str::contains;
 
     fn ccase(args: &[&str]) -> Assert {
         Command::cargo_bin("ccase")
@@ -38,6 +38,9 @@ mod test {
         ccase(&["-t", "snake", "myVarName"])
             .success()
             .stdout("my_var_name\n");
+        ccase(&["--to", "kebab", "myVarName"])
+            .success()
+            .stdout("my-var-name\n");
     }
 
     #[test]
@@ -45,5 +48,31 @@ mod test {
         ccase(&["-f", "snake", "-t", "pascal", "my_var-name"])
             .success()
             .stdout("MyVar-name\n");
+        ccase(&["-t", "snake", "--from", "pascal", "myVar-name"])
+            .success()
+            .stdout("my_var-name\n");
+    }
+
+    #[test]
+    fn to_required() {
+        ccase(&["myvarname"])
+            .failure()
+            .stderr(contains("following required arguments"))
+            .stderr(contains("--to"));
+    }
+
+    #[test]
+    fn input_required() {
+        ccase(&["-t", "snake"])
+            .failure()
+            .stderr(contains("following required arguments"))
+            .stderr(contains("input"));
+    }
+
+    #[test]
+    fn help_default() {
+        ccase(&[])
+            .failure()
+            .stderr(contains("Usage"));
     }
 }

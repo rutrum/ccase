@@ -1,7 +1,6 @@
-use clap::{builder::TypedValueParser, crate_version, Arg, Command, Error, error::ErrorKind};
+use clap::{crate_version, Arg, Command, Error, error::ErrorKind};
 use crate::{CaseExtension};
 use convert_case::{Case, Casing};
-use std::ffi::OsStr;
 
 pub fn build() -> Command {
     Command::new("ccase")
@@ -40,6 +39,7 @@ mod args {
             .value_name("case")
             .help("Case to convert to")
             .value_parser(case_value_parser)
+            .required(true)
     }
 
     fn from() -> Arg {
