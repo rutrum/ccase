@@ -10,6 +10,8 @@ pub fn build() -> Command {
         .args(args::all())
         .override_usage(usage())
         .max_term_width(80)
+        .after_help("See --help for a list of cases.")
+        .after_long_help(list_cases())
 }
 
 fn usage() -> StyledStr {
@@ -17,6 +19,16 @@ fn usage() -> StyledStr {
         "\x1b[1mccase --to\x1b[0m <case> <input>\n       \
          \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>"
     )
+}
+
+fn list_cases() -> StyledStr {
+    let mut s = String::from("\x1b[1;4mCases:\x1b[0m\n");
+    for case in Case::all_cases() {
+        let case_str = format!("{:?}", case).to_case(Case::Lower);
+        let underline_case = format!("\x1b[1m{}\x1b[0m", case_str);
+        s = format!("{}{:>25}  {}\n", s, underline_case, case.name_in_case())
+    }
+    StyledStr::from(s)
 }
 
 fn case_value_parser(s: &str) -> Result<Case, Error> {
