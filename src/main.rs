@@ -1,3 +1,7 @@
+use ccase;
+
 fn main() {
-    println!("Hello, world!");
+    let app = ccase::build_app();
+
+    app.get_matches();
 }
