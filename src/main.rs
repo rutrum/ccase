@@ -75,4 +75,20 @@ mod test {
             .failure()
             .stderr(contains("Usage"));
     }
+
+    #[test]
+    fn case_inputs_not_lower() {
+        ccase(&["-t", "SNAKE", "myVarName"])
+            .success()
+            .stdout("my_var_name\n");
+        ccase(&["-t", "SnAkE", "myVarName"])
+            .success()
+            .stdout("my_var_name\n");
+        ccase(&["-t", "snake", "-f", "KEBab", "my-varName"])
+            .success()
+            .stdout("my_varname\n");
+        ccase(&["-t", "snake", "-f", "KEBAB", "my-varName"])
+            .success()
+            .stdout("my_varname\n");
+    }
 }
