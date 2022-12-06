@@ -1,4 +1,4 @@
-use ccase::{self, CaseExtension};
+use ccase;
 use convert_case::{Boundary, Case, Casing};
 
 fn main() {

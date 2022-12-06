@@ -7,7 +7,10 @@ watch:
     watchexec -c -w src -- just test
 
 watch-help:
-    watchexec -c -w src -- cargo run -- --help
+    watchexec -c -w src -- cargo run -q -- -h
+
+watch-long-help:
+    watchexec -c -w src -- cargo run -q -- --help
 
 run *ARGS :
     cargo run -- {{ARGS}}
