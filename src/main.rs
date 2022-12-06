@@ -91,4 +91,23 @@ mod test {
             .success()
             .stdout("my_varname\n");
     }
+
+    #[test]
+    fn invalid_case() {
+        ccase(&["-t", "SNEK", "myVarName"])
+            .failure()
+            .stderr(contains("Invalid value"))
+            .stderr(contains("--to"));
+        ccase(&["-t", "snake", "-f", "SNEK", "my-varName"])
+            .failure()
+            .stderr(contains("Invalid value"))
+            .stderr(contains("--from"));
+    }
+
+    #[test]
+    fn empty_string_input() {
+        ccase(&["-t", "snake", r#""#])
+            .success()
+            .stdout("\n");
+    }
 }
