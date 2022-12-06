@@ -9,6 +9,7 @@ pub fn build() -> Command {
         .arg_required_else_help(true)
         .args(args::all())
         .override_usage(usage())
+        .max_term_width(80)
 }
 
 fn usage() -> StyledStr {
@@ -46,6 +47,7 @@ mod args {
             .long("to")
             .value_name("case")
             .help("Case to convert to")
+            .long_help("Convert the input into this case.  The input is mutated and joined using the pattern and delimiter of the case.")
             .value_parser(case_value_parser)
             .required(true)
     }
@@ -56,6 +58,7 @@ mod args {
             .long("from")
             .value_name("case")
             .help("Case to parse input as")
+            .long_help("Parse the input as if it were this case.  This means splitting the input based on boundaries found in that case.")
             .value_parser(case_value_parser)
     }
 
@@ -72,5 +75,6 @@ mod args {
         Arg::new("input")
             .required(true)
             .help("The string to convert")
+            .long_help("The string to convert into the --to case.")
     }
 }
