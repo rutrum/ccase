@@ -11,7 +11,11 @@ fn main() {
     let to = *matches.get_one::<Case>("to")
         .expect("--to is a required option");
 
-    let result = input.to_case(to);
+    let result = if let Some(&from) = matches.get_one::<Case>("from") {
+        input.from_case(from).to_case(to)
+    } else {
+        input.to_case(to)
+    };
 
     println!("{}", result);
 
@@ -34,5 +38,12 @@ mod test {
         ccase(&["-t", "snake", "myVarName"])
             .success()
             .stdout("my_var_name\n");
+    }
+
+    #[test]
+    fn from_case() {
+        ccase(&["-f", "snake", "-t", "pascal", "my_var-name"])
+            .success()
+            .stdout("MyVar-name\n");
     }
 }

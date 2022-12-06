@@ -11,6 +11,9 @@ pub trait CaseExtension {
 
     /// Alternative shorter name
     fn short_name(&self) -> Option<&str>;
+
+    /// Converts case name to flat case
+    fn name_to_flat_case(&self) -> String;
 }
 
 impl CaseExtension for Case {
@@ -36,5 +39,9 @@ impl CaseExtension for Case {
             Alternating => Some("alternate"),
             _ => None,
         }
+    }
+
+    fn name_to_flat_case(&self) -> String {
+        format!("{:?}", self).to_case(Case::Flat)
     }
 }

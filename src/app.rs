@@ -14,7 +14,7 @@ pub fn build() -> Command {
 fn case_value_parser(s: &str) -> Result<Case, Error> {
     let case_str = s.to_case(Case::Flat);
     for case in Case::all_cases() {
-        if case_str == format!("{:?}", case).to_case(Case::Flat) {
+        if case_str == case.name_to_flat_case() {
             return Ok(case);
         }
         if let Some(short) = case.short_name() {
@@ -48,7 +48,7 @@ mod args {
             .long("from")
             .value_name("case")
             .help("Case to parse input as")
-            
+            .value_parser(case_value_parser)
     }
 
     /*
