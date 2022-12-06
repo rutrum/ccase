@@ -1,5 +1,5 @@
 use ccase::{self, CaseExtension};
-use convert_case::{Case, Casing};
+use convert_case::{Boundary, Case, Casing};
 
 fn main() {
     let app = ccase::build_app();
@@ -13,6 +13,8 @@ fn main() {
 
     let result = if let Some(&from) = matches.get_one::<Case>("from") {
         input.from_case(from).to_case(to)
+    } else if let Some(boundary_str) = matches.get_one::<String>("boundaries") {
+        input.with_boundaries(&Boundary::list_from(boundary_str.as_str())).to_case(to)
     } else {
         input.to_case(to)
     };
@@ -109,5 +111,24 @@ mod test {
         ccase(&["-t", "snake", r#""#])
             .success()
             .stdout("\n");
+    }
+
+    #[test]
+    fn boundaries() {
+        ccase(&["-t", "snake", "-b", "aA", "myVar-Name-Longer"])
+            .success()
+            .stdout("my_var-name-longer\n");
+        ccase(&["-t", "snake", "-b", "-", "myVar-Name-Longer"])
+            .success()
+            .stdout("myvar_name_longer\n");
+    }
+
+    #[test]
+    fn not_from_and_boundaries() {
+        ccase(&["-t", "snake", "-b", "_", "-f", "kebab", "myVar-Name-Longer"])
+            .failure()
+            .stderr(contains("--from"))
+            .stderr(contains("cannot be used with"))
+            .stderr(contains("--boundaries"));
     }
 }

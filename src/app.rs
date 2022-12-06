@@ -5,7 +5,8 @@ use convert_case::{Case, Casing};
 pub fn build() -> Command {
     Command::new("ccase")
         .version(crate_version!())
-        .about("Converts between string cases.")
+        .about("Convert between string cases.")
+        .long_about(long_about())
         .arg_required_else_help(true)
         .args(args::all())
         .override_usage(usage())
@@ -19,6 +20,15 @@ fn usage() -> StyledStr {
         "\x1b[1mccase --to\x1b[0m <case> <input>\n       \
          \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>"
     )
+}
+
+fn long_about() -> StyledStr {
+    StyledStr::from(
+        "Convert between string cases. An input string is converted in 3 steps.\n\n\
+        Step 1:\x1b[0m Input is split into words by boundaries.\n\
+        Step 2:\x1b[0m Words are transformed to a certain pattern.\n\
+        Step 3:\x1b[0m Transformed words are joined by a delimeter.\
+    ")
 }
 
 fn list_cases() -> StyledStr {
@@ -49,8 +59,8 @@ fn case_value_parser(s: &str) -> Result<Case, Error> {
 mod args {
     use super::*;
 
-    pub fn all() -> [Arg; 3] {
-        [ to(), from(), input() ]
+    pub fn all() -> [Arg; 4] {
+        [ to(), from(), input(), boundaries() ]
     }
 
     fn to() -> Arg {
@@ -74,14 +84,15 @@ mod args {
             .value_parser(case_value_parser)
     }
 
-    /*
     fn boundaries() -> Arg {
         Arg::new("boundaries")
             .short('b')
             .long("boundaries")
+            .value_name("string")
             .help("String of boundaries to split input")
+            .long_help("String that contains boundaries on how to split input.  Any boundary contained in the string will be used as boundaries for splitting input into words.")
+            .conflicts_with("from")
     }
-    */
 
     fn input() -> Arg {
         Arg::new("input")
