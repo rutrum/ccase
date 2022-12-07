@@ -17,7 +17,8 @@ pub fn build() -> Command {
 fn usage() -> StyledStr {
     StyledStr::from(
         "\x1b[1mccase --to\x1b[0m <case> <input>\n       \
-         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>"
+         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>\n       \
+         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--boundaries\x1b[0m <string> <input>"
     )
 }
 

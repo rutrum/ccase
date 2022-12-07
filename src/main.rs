@@ -1,13 +1,39 @@
 use ccase;
 use convert_case::{Boundary, Case, Casing};
+use clap::ArgMatches;
+use std::env;
+use std::io::{self, Read};
 
 fn main() {
     let app = ccase::build_app();
-    let matches = app.get_matches();
+
+    let mut args: Vec<String> = env::args_os().map(|x| x.into_string().unwrap()).collect();
+
+    if atty::isnt(atty::Stream::Stdin) {
+        let stdin = io::stdin();
+        let mut handle = stdin.lock();
+
+        let mut v = Vec::new();
+        handle.read_to_end(&mut v).unwrap();
+
+        let s = String::from_utf8(v).unwrap().trim().to_string();
+
+        if !s.is_empty() {
+            args.push(s);
+        }
+    }
+
+    //println!("{:?}", args);
+
+    let matches = app.get_matches_from(args);
 
     let input = matches.get_one::<String>("input")
         .expect("input is a required argument");
     
+    convert(&matches, input);
+}
+
+fn convert(matches: &ArgMatches, input: &String) {
     let to = *matches.get_one::<Case>("to")
         .expect("--to is a required option");
 
@@ -20,7 +46,6 @@ fn main() {
     };
 
     println!("{}", result);
-
 }
 
 #[cfg(test)]
@@ -124,11 +149,22 @@ mod test {
     }
 
     #[test]
-    fn not_from_and_boundaries() {
+    fn from_and_boundaries_exclusive() {
         ccase(&["-t", "snake", "-b", "_", "-f", "kebab", "myVar-Name-Longer"])
             .failure()
             .stderr(contains("--from"))
             .stderr(contains("cannot be used with"))
             .stderr(contains("--boundaries"));
+    }
+
+    #[test]
+    fn stdin() {
+        Command::cargo_bin("ccase")
+            .unwrap()
+            .args(&["-t", "snake"])
+            .write_stdin("myVarName")
+            .assert()
+            .success()
+            .stdout("my_var_name\n");
     }
 }
