@@ -91,7 +91,8 @@ fn case_value_parser(s: &str) -> Result<Case, Error> {
             }
         }
     }
-    Err(Error::new(ErrorKind::ValueValidation))
+    //Err(Error::new(ErrorKind::DisplayHelp))
+    Err(Error::raw(ErrorKind::ValueValidation, format!("'{}' is not a valid case.  See ccase --help for list of cases.", s))) 
 }
 
 mod args {
@@ -107,7 +108,8 @@ mod args {
             .long("to")
             .value_name("case")
             .help("Case to convert to")
-            .long_help("Convert the input into this case.  The input is mutated and joined using the pattern and delimiter of the case.")
+            .long_help("Convert the input into this case.  \
+                The input is mutated and joined using the pattern and delimiter of the case.")
             .value_parser(case_value_parser)
             .required(true)
     }
@@ -118,7 +120,8 @@ mod args {
             .long("from")
             .value_name("case")
             .help("Case to parse input as")
-            .long_help("Parse the input as if it were this case.  This means splitting the input based on boundaries found in that case.")
+            .long_help("Parse the input as if it were this case.  \
+                This means splitting the input based on boundaries found in that case.")
             .value_parser(case_value_parser)
     }
 
@@ -128,7 +131,9 @@ mod args {
             .long("boundaries")
             .value_name("string")
             .help("String of boundaries to split input")
-            .long_help("String that contains boundaries on how to split input.  Any boundary contained in the string will be used as boundaries for splitting input into words.")
+            .long_help("String that contains boundaries on how to split input.  \
+                Any boundary contained in the string will be used as boundaries \
+                for splitting input into words.")
             .conflicts_with("from")
     }
 

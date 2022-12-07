@@ -3,10 +3,54 @@ use convert_case::{Boundary, Case, Casing};
 use clap::ArgMatches;
 use std::env;
 use std::io::{self, Read};
+use clap::{error::{ContextValue, ErrorFormatter, Error, ContextKind}, builder::StyledStr};
 
 fn main() {
     let app = ccase::build_app();
 
+    let args = get_args_with_stdin();
+
+    let matches = app.get_matches_from(args);
+
+    let input = matches.get_one::<String>("input")
+        .expect("input is a required argument");
+    
+    convert(&matches, input);
+
+    /*
+    match app.try_get_matches_from(args) {
+        Ok(matches) => {
+            let input = matches.get_one::<String>("input")
+                .expect("input is a required argument");
+            
+            convert(&matches, input);
+        }
+        Err(err) => {
+            if let Some(ContextValue::String("--to <case>".to_string())) = err.get(ContextKind::InvalidArg) {
+                let newerr = err.apply::<CaseParserErrorFormatter>();
+                newerr.print();
+            }
+        }
+    }
+    */
+}
+
+struct CaseParserErrorFormatter;
+impl ErrorFormatter for CaseParserErrorFormatter {
+    fn format_error(error: &Error<Self>) -> StyledStr {
+        let arg = error.get(ContextKind::InvalidArg).unwrap();
+        let value = error.get(ContextKind::InvalidValue).unwrap();
+        StyledStr::from(format!(
+            "\x1b[31;1merror:\x1b[0m Invalid value '\x1b[33m{}\x1b[0m' for \
+            '\x1b[33m{}\x1b[0m': '{}' is not a valid case.  See --help for list of cases.",
+            value,
+            arg,
+            value,
+        ))
+    }
+}
+
+fn get_args_with_stdin() -> Vec<String> {
     let mut args: Vec<String> = env::args_os().map(|x| x.into_string().unwrap()).collect();
 
     if atty::isnt(atty::Stream::Stdin) {
@@ -16,21 +60,14 @@ fn main() {
         let mut v = Vec::new();
         handle.read_to_end(&mut v).unwrap();
 
-        let s = String::from_utf8(v).unwrap().trim().to_string();
+        let s = String::from_utf8(v).unwrap();
 
         if !s.is_empty() {
             args.push(s);
         }
     }
 
-    //println!("{:?}", args);
-
-    let matches = app.get_matches_from(args);
-
-    let input = matches.get_one::<String>("input")
-        .expect("input is a required argument");
-    
-    convert(&matches, input);
+    args
 }
 
 fn convert(matches: &ArgMatches, input: &String) {
@@ -166,5 +203,17 @@ mod test {
             .assert()
             .success()
             .stdout("my_var_name\n");
+    }
+
+    #[test]
+    #[ignore]
+    fn stdin_empty() {
+        Command::cargo_bin("ccase")
+            .unwrap()
+            .args(&["-t", "snake"])
+            .write_stdin(r#""#)
+            .assert()
+            .success()
+            .stdout("\n");
     }
 }
