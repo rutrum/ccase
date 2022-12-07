@@ -25,7 +25,7 @@ fn after_long_help() -> StyledStr {
     let s = format!(
         "\x1b[1;4mCases:\x1b[0m\n\
         {}\n\
-        \x1b[1;4mConversion:\x1b[0m\n\
+        \x1b[1;4mConversion:\x1b[0m\n  \
         {}",
         list_cases(),
         conversion_description(),
@@ -36,28 +36,28 @@ fn after_long_help() -> StyledStr {
 
 fn conversion_description() -> &'static str {
     "Case conversion is done in 3 steps.\n\
-    \n\
-    \x1b[4mStep 1: Input is split into words by boundaries.\x1b[0m \n  \
-    Boundaries identify how to split in the input string.  Boundaries can be the delimeters\n  \
-    hyphen, underscore, and space.  Boundaries can identify splitting between characters\n  \
-    based on character characteristics.  This includes a lowercase letter followed by an\n  \
-    uppercase letter, a digit followed by an uppercase letter, etc.  After the input is\n  \
-    split, we call the result words.\n\
     \n  \
-    Boundaries are selected from those that join the `--from` case or any boundaries\n  \
+    \x1b[1mStep 1: Input is split into words by boundaries.\x1b[0m \n    \
+    Boundaries identify how to split in the input string.  Boundaries can be the \n    \
+    delimeters hyphen, underscore, and space.  Boundaries can identify splitting between\n    \
+    characters based on character characteristics.  This includes a lowercase letter\n    \
+    followed by an uppercase letter, a digit followed by an uppercase letter, etc.  After\n    \
+    the input is split, we call the result words.\n\
+    \n    \
+    Boundaries are selected from those that join the `--from` case or any boundaries\n    \
     present in a string provided by `--boundaries`.
-    \n\
-    \x1b[4mStep 2: Words are transformed to a certain pattern.\x1b[0m\n  \
-    The list of words are transformed into lowercase, uppercase, or capitalized in a\n  \
+    \n  \
+    \x1b[1mStep 2: Words are transformed to a certain pattern.\x1b[0m\n    \
+    The list of words are transformed into lowercase, uppercase, or capitalized in a\n    \
     particular order.  The order of these transformations by word is called a pattern.\n\
-    \n  \
+    \n    \
     The pattern is select from that of the `--to` case.
-    \n\
-    \x1b[4mStep 3: Transformed words are joined by a delimeter.\x1b[0m\n  \
-    Finally the list of transformated words are joined by a delimeter, such as a hyphen\n  \
-    underscore, or space.  There may also not be a delimeter at all, and words are\n  \
-    concatenated directly together.\n\
     \n  \
+    \x1b[1mStep 3: Transformed words are joined by a delimeter.\x1b[0m\n    \
+    Finally the list of transformated words are joined by a delimeter, such as a hyphen\n    \
+    underscore, or space.  There may also not be a delimeter at all, and words are\n    \
+    concatenated directly together.\n\
+    \n    \
     The delimiter is selected from the delimiter that joins the `--to` case.
     "
 }
@@ -71,7 +71,7 @@ fn after_help() -> StyledStr {
 fn list_cases() -> String {
     let mut s = String::new();
     for case in Case::all_cases() {
-        let case_str = format!("{:?}", case).to_case(Case::Lower);
+        let case_str = format!("{:?}", case).to_case(Case::Flat);
         let underline_case = format!("\x1b[1m{}\x1b[0m", case_str);
         s = format!("{}{:>25}  {}\n", s, underline_case, case.name_in_case())
     }
