@@ -16,38 +16,6 @@ fn main() {
         .expect("input is a required argument");
     
     convert(&matches, input);
-
-    /*
-    match app.try_get_matches_from(args) {
-        Ok(matches) => {
-            let input = matches.get_one::<String>("input")
-                .expect("input is a required argument");
-            
-            convert(&matches, input);
-        }
-        Err(err) => {
-            if let Some(ContextValue::String("--to <case>".to_string())) = err.get(ContextKind::InvalidArg) {
-                let newerr = err.apply::<CaseParserErrorFormatter>();
-                newerr.print();
-            }
-        }
-    }
-    */
-}
-
-struct CaseParserErrorFormatter;
-impl ErrorFormatter for CaseParserErrorFormatter {
-    fn format_error(error: &Error<Self>) -> StyledStr {
-        let arg = error.get(ContextKind::InvalidArg).unwrap();
-        let value = error.get(ContextKind::InvalidValue).unwrap();
-        StyledStr::from(format!(
-            "\x1b[31;1merror:\x1b[0m Invalid value '\x1b[33m{}\x1b[0m' for \
-            '\x1b[33m{}\x1b[0m': '{}' is not a valid case.  See --help for list of cases.",
-            value,
-            arg,
-            value,
-        ))
-    }
 }
 
 fn get_args_with_stdin() -> Vec<String> {
