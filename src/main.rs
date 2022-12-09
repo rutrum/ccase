@@ -11,11 +11,16 @@ fn main() {
 
     let matches = app.get_matches_from(args);
 
-    let inputs = matches.get_many::<String>("input")
-        .expect("input is a required argument");
+    let inputs = match matches.get_many::<String>("input") {
+        None => if atty::isnt(atty::Stream::Stdin) {
+            Default::default()
+        } else {
+            panic!("<input> is a required argument")
+        }
+        Some(inputs) => inputs,
+    };
     
     inputs.for_each(|input| convert(&matches, input));
-    //convert(&matches, input);
 }
 
 fn get_args_with_stdin() -> Vec<String> {
@@ -31,11 +36,12 @@ fn get_args_with_stdin() -> Vec<String> {
         let s = String::from_utf8(v).unwrap();
 
         if !s.is_empty() {
-            args.push(s.trim_end().to_string());
+            for word in s.lines() {
+                args.push(word.trim_end().to_string());
+            }
         }
     }
 
-    //println!("{:?}", args);
     args
 }
 
@@ -197,10 +203,17 @@ mod test {
 
         #[ignore]
         #[test]
-        fn stdin_empty() {
+        fn empty() {
             pipe_ccase(r#""#, &["-t", "snake"])
                 .success()
                 .stdout("\n");
+        }
+
+        #[test]
+        fn multiple_inputs() {
+            pipe_ccase("myVarName\nanotherMultiWordToken\n", &["-t", "Pascal"])
+                .success()
+                .stdout("MyVarName\nAnotherMultiWordToken\n");
         }
     }
 }

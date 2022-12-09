@@ -16,9 +16,9 @@ pub fn build() -> Command {
 
 fn usage() -> StyledStr {
     StyledStr::from(
-        "\x1b[1mccase --to\x1b[0m <case> <input>\n       \
-         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>\n       \
-         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--boundaries\x1b[0m <string> <input>"
+        "\x1b[1mccase --to\x1b[0m <case> <input>...\n       \
+         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>...\n       \
+         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--boundaries\x1b[0m <string> <input>..."
     )
 }
 
@@ -140,8 +140,8 @@ mod args {
     fn input() -> Arg {
         Arg::new("input")
             .required(true)
-            .help("The string to convert")
-            .long_help("The string to convert into the --to case.")
+            .help("The string(s) to convert")
+            .long_help("The string(s) to convert into the --to case.")
             .action(ArgAction::Append)
     }
 }
