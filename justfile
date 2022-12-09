@@ -1,7 +1,7 @@
 default: run
 
-test:
-    cargo test
+test filter="":
+    cargo test {{filter}}
 
 watch:
     watchexec -c -w src -- just test

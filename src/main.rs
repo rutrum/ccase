@@ -22,6 +22,7 @@ fn get_args_with_stdin() -> Vec<String> {
     let mut args: Vec<String> = env::args_os().map(|x| x.into_string().unwrap()).collect();
 
     if atty::isnt(atty::Stream::Stdin) {
+        //println!("I'm not a stdin tty!");
         let stdin = io::stdin();
         let mut handle = stdin.lock();
 
@@ -31,10 +32,12 @@ fn get_args_with_stdin() -> Vec<String> {
         let s = String::from_utf8(v).unwrap();
 
         if !s.is_empty() {
-            args.push(s);
+            args.push(s.trim_end().to_string());
         }
     }
 
+
+    //println!("{:?}", args);
     args
 }
 
@@ -162,26 +165,37 @@ mod test {
             .stderr(contains("--boundaries"));
     }
 
-    #[test]
-    fn stdin() {
-        Command::cargo_bin("ccase")
-            .unwrap()
-            .args(&["-t", "snake"])
-            .write_stdin("myVarName")
-            .assert()
-            .success()
-            .stdout("my_var_name\n");
-    }
+    mod stdin {
+        use super::*;
 
-    #[test]
-    #[ignore]
-    fn stdin_empty() {
-        Command::cargo_bin("ccase")
-            .unwrap()
-            .args(&["-t", "snake"])
-            .write_stdin(r#""#)
-            .assert()
-            .success()
-            .stdout("\n");
+        fn pipe_ccase(stdin: &str, args: &[&str]) -> Assert {
+            Command::cargo_bin("ccase")
+                .unwrap()
+                .args(args)
+                .write_stdin(stdin)
+                .assert()
+        }
+        
+        #[test]
+        fn stdin() {
+            pipe_ccase("myVarName", &["-t", "snake"])
+                .success()
+                .stdout("my_var_name\n");
+        }
+
+        #[test]
+        fn newline_ending() {
+            pipe_ccase("myVarName\n", &["-t", "snake"])
+                .success()
+                .stdout("my_var_name\n");
+        }
+
+        #[test]
+        #[ignore]
+        fn stdin_empty() {
+            pipe_ccase(r#""#, &["-t", "snake"])
+                .success()
+                .stdout("\n");
+        }
     }
 }
