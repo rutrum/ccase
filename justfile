@@ -1,6 +1,6 @@
 default: run
 
-test filter="":
+test *filter="":
     cargo test {{filter}}
 
 watch:

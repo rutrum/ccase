@@ -11,7 +11,7 @@ fn main() {
 
     let matches = app.get_matches_from(args);
 
-    let inputs = matches.get_many::<String>("input")
+    let inputs = matches.get_many::<Vec<String>>("input")
         .expect("input is a required argument");
     
     inputs.for_each(|input| convert(&matches, input));

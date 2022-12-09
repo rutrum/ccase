@@ -1,4 +1,4 @@
-use clap::{crate_version, Arg, Command, Error, error::ErrorKind, builder::StyledStr};
+use clap::{ArgAction, crate_version, Arg, Command, Error, error::ErrorKind, builder::StyledStr};
 use crate::{CaseExtension};
 use convert_case::{Case, Casing};
 
@@ -142,5 +142,6 @@ mod args {
             .required(true)
             .help("The string to convert")
             .long_help("The string to convert into the --to case.")
+            .action(ArgAction::Append)
     }
 }
