@@ -1,5 +1,5 @@
 use ccase;
-use convert_case::{Boundary, Case, Casing};
+use convert_case::{Boundary, Case, Casing, Pattern, Converter};
 use clap::ArgMatches;
 use std::env;
 use std::io::{self, Read};
@@ -13,12 +13,11 @@ fn main() {
 
     let args = get_args_with_stdin();
 
-    let matches = app.clone().get_matches_from(args);
+    let matches = app.get_matches_from(args);
 
     let inputs = match matches.get_many::<String>("input") {
         None => if atty::isnt(atty::Stream::Stdin) {
             Default::default()
-            //missing_error.exit();
         } else {
             missing_error.exit();
         }
@@ -51,18 +50,36 @@ fn get_args_with_stdin() -> Vec<String> {
 }
 
 fn convert(matches: &ArgMatches, input: &String) {
-    let to = *matches.get_one::<Case>("to")
-        .expect("--to is a required option");
 
-    let result = if let Some(&from) = matches.get_one::<Case>("from") {
-        input.from_case(from).to_case(to)
+    // check if from or boundaries or none
+    
+    let mut conv = Converter::new();
+
+    if let Some(&from) = matches.get_one::<Case>("from") {
+        // --from
+        conv = conv.from_case(from);
+
     } else if let Some(boundary_str) = matches.get_one::<String>("boundaries") {
-        input.with_boundaries(&Boundary::list_from(boundary_str.as_str())).to_case(to)
-    } else {
-        input.to_case(to)
-    };
+        // --boundaries
+        let boundaries = Boundary::list_from(boundary_str.as_str());
+        conv = conv.set_boundaries(&boundaries);
+    }
 
-    println!("{}", result);
+    if let Some(&to) = matches.get_one::<Case>("to") {
+        // --to
+        conv = conv.to_case(to);
+
+    } else if let Some(&pattern) = matches.get_one::<Pattern>("pattern") {
+        // --pattern
+        conv = conv.set_pattern(pattern);
+
+        if let Some(delim) = matches.get_one::<String>("delimeter") {
+            // --delimeter
+            conv = conv.set_delim(delim);
+        }
+    }
+
+    println!("{}", conv.convert(input))
 }
 
 #[cfg(test)]
@@ -103,6 +120,33 @@ mod test {
             .failure()
             .stderr(contains("following required arguments"))
             .stderr(contains("--to"));
+    }
+
+    #[test]
+    fn pattern_only() {
+        ccase(&["-p", "capital", "MY_VAR_NAME"])
+            .success()
+            .stdout("MyVarName\n");
+    }
+
+    #[test]
+    fn to_exclusive_with_pattern_delim() {
+        ccase(&["-t", "snake", "-p", "capital", "MY_VAR_NAME"])
+            .failure()
+            .stderr(contains("--to <case>"))
+            .stderr(contains("cannot be used with"))
+            .stderr(contains("--pattern <pattern>"));
+        ccase(&["-t", "snake", "-d", "-", "MY_VAR_NAME"])
+            .failure()
+            .stderr(contains("--to <case>"))
+            .stderr(contains("cannot be used with"))
+            .stderr(contains("--delimeter <string>"));
+    }
+
+    fn delimeter() {
+        ccase(&["-p", "sentence", "-d", ".", "myVarName"])
+            .success()
+            .stdout("My.var.name");
     }
 
     #[ignore] // atty is tricked in test, look at ccase -t snake manually

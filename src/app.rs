@@ -1,11 +1,11 @@
 use clap::{ArgAction, crate_version, Arg, Command, Error, error::ErrorKind, builder::StyledStr};
-use crate::{CaseExtension};
-use convert_case::{Case, Casing};
+use crate::{CaseExtension, case_value_parser, pattern_value_parser};
+use convert_case::{Case, Casing, Pattern};
 
 pub fn build() -> Command {
     Command::new("ccase")
         .version(crate_version!())
-        .about("Convert between string cases.")
+        .about("Convert between string cases.\nhttps://github.com/rutrum/ccase")
         .arg_required_else_help(true)
         .args(args::all())
         .override_usage(usage())
@@ -79,27 +79,11 @@ fn list_cases() -> String {
     s
 }
 
-fn case_value_parser(s: &str) -> Result<Case, Error> {
-    let case_str = s.to_case(Case::Flat);
-    for case in Case::all_cases() {
-        if case_str == case.name_to_flat_case() {
-            return Ok(case);
-        }
-        if let Some(short) = case.short_name() {
-            if case_str == short {
-                return Ok(case);
-            }
-        }
-    }
-    //Err(Error::new(ErrorKind::DisplayHelp))
-    Err(Error::raw(ErrorKind::ValueValidation, format!("'{}' is not a valid case.  See ccase --help for list of cases.", s))) 
-}
-
 mod args {
     use super::*;
 
-    pub fn all() -> [Arg; 4] {
-        [ to(), from(), input(), boundaries() ]
+    pub fn all() -> [Arg; 6] {
+        [ to(), from(), input(), boundaries(), pattern(), delimeter() ]
     }
 
     fn to() -> Arg {
@@ -111,7 +95,7 @@ mod args {
             .long_help("Convert the input into this case.  \
                 The input is mutated and joined using the pattern and delimiter of the case.")
             .value_parser(case_value_parser)
-            .required(true)
+            .required_unless_present("pattern")
     }
 
     fn from() -> Arg {
@@ -137,9 +121,28 @@ mod args {
             .conflicts_with("from")
     }
 
+    fn pattern() -> Arg {
+        Arg::new("pattern")
+            .short('p')
+            .long("pattern")
+            .help("Pattern to transform words")
+            .long_help("Transform the words after splitting the input based upon the pattern.")
+            .conflicts_with("to")
+            .value_parser(pattern_value_parser)
+    }
+
+    fn delimeter() -> Arg {
+        Arg::new("delimeter")
+            .short('d')
+            .long("delimeter")
+            .help("String to join words by")
+            .long_help("String to join words together after transforming.")
+            .conflicts_with("to")
+            .value_name("string")
+    }
+
     fn input() -> Arg {
         Arg::new("input")
-            //.required(true)
             .help("The string(s) to convert")
             .long_help("The string(s) to convert into the --to case.")
             .action(ArgAction::Append)

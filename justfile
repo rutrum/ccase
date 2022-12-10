@@ -1,6 +1,7 @@
 default: run
 
 test *filter="":
+    cargo build
     cargo test {{filter}}
 
 watch:
