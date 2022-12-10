@@ -5,17 +5,22 @@ use std::env;
 use std::io::{self, Read};
 
 fn main() {
-    let app = ccase::build_app();
+    let mut app = ccase::build_app();
+            
+    let missing_error = app.error(clap::error::ErrorKind::MissingRequiredArgument, 
+        "The following required arguments were not provided:\n  \
+            \x1b[32m<input>...\x1b[m");
 
     let args = get_args_with_stdin();
 
-    let matches = app.get_matches_from(args);
+    let matches = app.clone().get_matches_from(args);
 
     let inputs = match matches.get_many::<String>("input") {
         None => if atty::isnt(atty::Stream::Stdin) {
             Default::default()
+            //missing_error.exit();
         } else {
-            panic!("<input> is a required argument")
+            missing_error.exit();
         }
         Some(inputs) => inputs,
     };
@@ -100,6 +105,7 @@ mod test {
             .stderr(contains("--to"));
     }
 
+    #[ignore] // atty is tricked in test, look at ccase -t snake manually
     #[test]
     fn input_required() {
         ccase(&["-t", "snake"])
@@ -201,12 +207,11 @@ mod test {
                 .stdout("my_var_name\n");
         }
 
-        #[ignore]
         #[test]
         fn empty() {
             pipe_ccase(r#""#, &["-t", "snake"])
                 .success()
-                .stdout("\n");
+                .stdout("");
         }
 
         #[test]

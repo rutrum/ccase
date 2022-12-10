@@ -139,7 +139,7 @@ mod args {
 
     fn input() -> Arg {
         Arg::new("input")
-            .required(true)
+            //.required(true)
             .help("The string(s) to convert")
             .long_help("The string(s) to convert into the --to case.")
             .action(ArgAction::Append)
