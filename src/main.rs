@@ -24,6 +24,12 @@ fn main() {
         Some(inputs) => inputs,
     };
     
+    /*
+    inputs.for_each(|input| {
+        println!("{:?}", input);
+        convert(&matches, input)
+    });
+    */
     inputs.for_each(|input| convert(&matches, input));
 }
 
@@ -102,6 +108,9 @@ mod test {
         ccase(&["--to", "kebab", "myVarName"])
             .success()
             .stdout("my-var-name\n");
+        ccase(&["--to", "kebab", "my Var Name"])
+            .success()
+            .stdout("my-var-name\n");
     }
 
     #[test]
@@ -110,6 +119,9 @@ mod test {
             .success()
             .stdout("MyVar-name\n");
         ccase(&["-t", "snake", "--from", "pascal", "myVar-name"])
+            .success()
+            .stdout("my_var-name\n");
+        ccase(&["-t", "snake", "--from", "lower", "my Var-name"])
             .success()
             .stdout("my_var-name\n");
     }
@@ -127,6 +139,9 @@ mod test {
         ccase(&["-p", "capital", "MY_VAR_NAME"])
             .success()
             .stdout("MyVarName\n");
+        ccase(&["-p", "Sentence", "MY_VAR_NAME"])
+            .success()
+            .stdout("Myvarname\n");
     }
 
     #[test]
@@ -191,6 +206,18 @@ mod test {
             .failure()
             .stderr(contains("Invalid value"))
             .stderr(contains("--from"));
+    }
+
+    #[test]
+    fn invalid_pattern() {
+        ccase(&["-p", "SENT", "myVarName"])
+            .failure()
+            .stderr(contains("Invalid value"))
+            .stderr(contains("--pattern"));
+        ccase(&["-p", "SENT", "-f", "snake", "my-varName"])
+            .failure()
+            .stderr(contains("Invalid value"))
+            .stderr(contains("--pattern"));
     }
 
     #[test]
