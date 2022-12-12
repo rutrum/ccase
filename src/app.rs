@@ -139,6 +139,7 @@ mod args {
             .long_help("String to join words together after transforming.")
             .conflicts_with("to")
             .value_name("string")
+            .allow_hyphen_values(true)
     }
 
     fn input() -> Arg {
