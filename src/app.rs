@@ -1,5 +1,5 @@
 use clap::{ArgAction, crate_version, Arg, Command, Error, error::ErrorKind, builder::StyledStr};
-use crate::{CaseExtension, case_value_parser, pattern_value_parser};
+use crate::{PatternExtension, CaseExtension, case_value_parser, pattern_value_parser};
 use convert_case::{Case, Casing, Pattern};
 
 pub fn build() -> Command {
@@ -26,10 +26,11 @@ fn after_long_help() -> StyledStr {
     let s = format!(
         "\x1b[1;4mCases:\x1b[0m\n\
         {}\n\
-        \x1b[1;4mConversion:\x1b[0m\n  \
-        {}",
+        \x1b[1;4mPatterns:\x1b[0m\n\
+        {}\n\
+        ",
         list_cases(),
-        conversion_description(),
+        list_patterns(),
     );
     
     StyledStr::from(s)
@@ -75,6 +76,16 @@ fn list_cases() -> String {
         let case_str = format!("{:?}", case).to_case(Case::Flat);
         let underline_case = format!("\x1b[1m{}\x1b[0m", case_str);
         s = format!("{}{:>25}  {}\n", s, underline_case, case.name_in_case())
+    }
+    s
+}
+
+fn list_patterns() -> String {
+    let mut s = String::new();
+    for pattern in crate::all_patterns() {
+        let pattern_str = format!("{:?}", pattern).to_case(Case::Flat);
+        let underline_pattern = format!("\x1b[1m{}\x1b[0m", pattern_str);
+        s = format!("{}{:>25}  {}\n", s, underline_pattern, pattern.example())
     }
     s
 }

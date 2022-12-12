@@ -1,4 +1,4 @@
-use convert_case::{Case, Casing};
+use convert_case::{Case, Casing, Pattern};
 
 /// Extensions Case with additional functions.
 pub trait CaseExtension {
@@ -43,5 +43,28 @@ impl CaseExtension for Case {
 
     fn name_to_flat_case(&self) -> String {
         format!("{:?}", self).to_case(Case::Flat)
+    }
+}
+
+pub trait PatternExtension {
+
+    /// Prints an example of pattern
+    fn example(&self) -> String;
+}
+
+impl PatternExtension for Pattern {
+    fn example(&self) -> String {
+        use Pattern::*;
+        match self {
+            Lowercase => "lower, lower, ...",
+            Uppercase => "UPPER, UPPER, ...",
+            Capital => "Capital, Capital, ...",
+            Sentence => "Capital, lower, lower, ...",
+            Camel => "lower, Capital, Capital, ...",
+            Alternating => "aLtErNaTiNg, aLtErNaTiNg, ...",
+            Toggle => "tOGGLE, tOGGLE, ...",
+            PseudoRandom => "pSUeDorANdOm, pSUedORaNdoM, ...",
+            Random => "RanDOM, RAndom, ...",
+        }.to_string()
     }
 }

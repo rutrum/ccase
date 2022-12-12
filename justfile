@@ -4,6 +4,9 @@ test *filter="":
     cargo build
     cargo test {{filter}}
 
+help:
+    cargo run -- --help
+
 watch:
     watchexec -c -w src -- just test
 
