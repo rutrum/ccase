@@ -29,6 +29,14 @@ family_christmas_photo_2001.png
 family_christmas_photo_2002.png
 ```
 
+## Install
+
+You can install using `cargo`:
+```
+cargo install ccase
+```
+You can also install from the debian provided in the releases.
+
 ## Usage
 
 ### `-t, --to <case>`

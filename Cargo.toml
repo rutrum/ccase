@@ -1,6 +1,6 @@
 [package]
 name = "ccase"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Rutrum <dave@rutrum.net>"]
 edition = "2021"
 description = "Command line interface to convert strings into any case"
@@ -23,5 +23,3 @@ atty = "0.2.14"
 [dev-dependencies]
 predicates = "2.1.1"
 assert_cmd = "2.0.4"
-# strum = "0.18.0"
-# strum_macros = "0.18.0"
