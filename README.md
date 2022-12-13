@@ -75,6 +75,30 @@ My__var__name
 
 # How Case Conversion Works
 
+A _case_ can be defined as a _pattern_ joined with a _delimeter_.  Turning a list of words into a certain case happens in two steps.  First, each word is transformed by the pattern.  Then the words are joined together with the delimeter.
+
+_Case conversion_ is splitting a single string into words, then performing the transformation and joining.  Input is split using _boundaries_.
+
+## Step 1: Splitting Input into Words by Boundaries
+
+Boundaries define how to split input.  There are three types of boundaries.  There are character based boundaries like hyphen `-`, underscore `_`, and space ` ` that are not part of the final word list, but split the input around the character.  There are also boundaries like lower-upper (`aA`) or digit-lower (`1a`) that split the input between the characters, and matching characters are included in the result.  Lastly theres the acryonym boundary (`AAa`) that splits between the two uppercase characters (an example of this is in `HTTPRequest`).
+
+In `ccase`, one can specify boundaries using the `--boundaries` option, or they can define a case to convert _from_ using `--from`.  Inputs that are transformed into a certain case will have boundaries that associated with the result.  For example, snake case is joined with underscores, so only underscores will be used as boundaries.  Strings in camel case on the other hand have boundaries between lowercase and uppercase letters, so the lower-upper (`aA`) boundary is used.
+
+## Step 2: Transforming Words with Pattern
+
+A pattern is a series of _word cases_ that describe how a single word is transformed.  For example, the lower word case makes all characters lowercase, the upper word case makes all characters uppercase, and the capital word case makes the first letter uppercase and the remaining lowercase.  For example, snake case uses a pattern where all word should be lowercased.  This is the lowercase pattern.  Camel case uses a pattern where the first word is lowercased, and the remaining words are capitalized.  This is called the camel pattern.
+
+In `ccase`, a pattern can directly specified with `--pattern` or whatever pattern is associated with the case in `--to` option will be used.
+
+## Step 3: Joining Words with a Delimeter
+
+Lastly, words are joined with a string specified as a delimeter.  Cases like snake, kebab, and lower use character strings `_`, `-`, ` ` respectively.  The delimeter can also be an empty string, like in camel case.
+
+In `ccase`, the delimeter can be specified with `--delimeter` or whatever delimeter is associated with the case in the `--to` option.  If no delimeter is supplied, the delimeter defaults to an empty string.
+
+# Cases, Patterns, and Boundaries
+
 ## List of Cases
 
 | Case           | Example              |
