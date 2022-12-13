@@ -1,5 +1,32 @@
 # `ccase` is a command line utility for converting between string cases
 
+Convert strings between snake case, kebab case, camel case, title case, pascal case, and so many more.
+
+## Use Cases
+
+```sh
+$ ls ~/roms
+donkey_kong_64.z64
+kirby_64_the_crystal_shards.z64
+super_mario_64.z64
+$ ls ~/roms | cut -d '.' -f 1 | ccase -f snake -t title
+Donkey Kong 64
+Kirby 64 The Crystal Shards
+Super Mario 64
+```
+
+```sh
+$ ls xmas
+'Family Christmas photo-1999.png'
+Family_christmas_photo-2000.png
+family-christmas-photo-2001.png
+$ for f in xmas/*; do new=$(ccase -f snake "$f"); mv "$f" "$new"; done
+$ ls xmas
+family_christmas_photo_1999.png
+family_christmas_photo_2000.png
+family_christmas_photo_2001.png
+```
+
 ## Usage
 
 ### `-t, --to <case>`
