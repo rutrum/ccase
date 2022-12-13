@@ -20,11 +20,13 @@ $ ls xmas
 'Family Christmas photo-1999.png'
 Family_christmas_photo-2000.png
 family-christmas-photo-2001.png
-$ for f in xmas/*; do new=$(ccase -f snake "$f"); mv "$f" "$new"; done
+FamilyChristmasPhoto2002.png
+$ for f in xmas/*; do mv "$f" $(ccase -f snake "$f"); done
 $ ls xmas
 family_christmas_photo_1999.png
 family_christmas_photo_2000.png
 family_christmas_photo_2001.png
+family_christmas_photo_2002.png
 ```
 
 ## Usage
@@ -98,8 +100,6 @@ $ ccase -p sentence -d __ my-var-name
 My__var__name
 ```
 
-## Behavior
-
 # How Case Conversion Works
 
 A _case_ can be defined as a _pattern_ joined with a _delimeter_.  Turning a list of words into a certain case happens in two steps.  First, each word is transformed by the pattern.  Then the words are joined together with the delimeter.
@@ -108,7 +108,7 @@ _Case conversion_ is splitting a single string into words, then performing the t
 
 ## Step 1: Splitting Input into Words by Boundaries
 
-Boundaries define how to split input.  There are three types of boundaries.  There are character based boundaries like hyphen `-`, underscore `_`, and space ` ` that are not part of the final word list, but split the input around the character.  There are also boundaries like lower-upper (`aA`) or digit-lower (`1a`) that split the input between the characters, and matching characters are included in the result.  Lastly theres the acryonym boundary (`AAa`) that splits between the two uppercase characters (an example of this is in `HTTPRequest`).
+Boundaries define how to split input.  There are three types of boundaries.  There are character based boundaries like hyphen `-`, underscore `_`, and space ` ` that are not part of the final word list, but split the input around the character.  There are also boundaries like lower-upper (`aA`) or digit-lower (`1a`) that split the input between the characters, and matching characters are included in the result.  Lastly there is the acryonym boundary (`AAa`) that splits between the two uppercase characters (an example of this is in `HTTPRequest`).
 
 In `ccase`, one can specify boundaries using the `--boundaries` option, or they can define a case to convert _from_ using `--from`.  Inputs that are transformed into a certain case will have boundaries that associated with the result.  For example, snake case is joined with underscores, so only underscores will be used as boundaries.  Strings in camel case on the other hand have boundaries between lowercase and uppercase letters, so the lower-upper (`aA`) boundary is used.
 
@@ -120,7 +120,7 @@ In `ccase`, a pattern can directly specified with `--pattern` or whatever patter
 
 ## Step 3: Joining Words with a Delimeter
 
-Lastly, words are joined with a string specified as a delimeter.  Cases like snake, kebab, and lower use character strings `_`, `-`, ` ` respectively.  The delimeter can also be an empty string, like in camel case.
+Lastly, words are joined with a string specified as a delimeter.  Cases like snake, kebab, and lower use character strings `_`, `-`, and space respectively.  The delimeter can also be an empty string, like in camel case.
 
 In `ccase`, the delimeter can be specified with `--delimeter` or whatever delimeter is associated with the case in the `--to` option.  If no delimeter is supplied, the delimeter defaults to an empty string.
 
