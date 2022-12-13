@@ -15,7 +15,13 @@ fn pattern_value_parser(s: &str) -> Result<Pattern, Error> {
             return Ok(pattern);
         }
     }
-    Err(Error::raw(ErrorKind::ValueValidation, format!("'{}' is not a valid pattern.  See ccase --help for list of patterns.", s))) 
+    Err(Error::raw(
+        ErrorKind::ValueValidation,
+        format!(
+            "'{}' is not a valid pattern.  See ccase --help for list of patterns.",
+            s
+        ),
+    ))
 }
 
 fn all_patterns() -> Vec<Pattern> {
@@ -45,5 +51,11 @@ fn case_value_parser(s: &str) -> Result<Case, Error> {
             }
         }
     }
-    Err(Error::raw(ErrorKind::ValueValidation, format!("'{}' is not a valid case.  See ccase --help for list of cases.", s))) 
+    Err(Error::raw(
+        ErrorKind::ValueValidation,
+        format!(
+            "'{}' is not a valid case.  See ccase --help for list of cases.",
+            s
+        ),
+    ))
 }

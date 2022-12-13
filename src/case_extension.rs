@@ -2,7 +2,6 @@ use convert_case::{Case, Casing, Pattern};
 
 /// Extensions Case with additional functions.
 pub trait CaseExtension {
-
     /// The name of the case in the case
     fn name_in_case(self) -> String;
 
@@ -47,7 +46,6 @@ impl CaseExtension for Case {
 }
 
 pub trait PatternExtension {
-
     /// Prints an example of pattern
     fn example(&self) -> String;
 }
@@ -65,6 +63,7 @@ impl PatternExtension for Pattern {
             Toggle => "tOGGLE, tOGGLE, ...",
             PseudoRandom => "pSUeDorANdOm, pSUedORaNdoM, ...",
             Random => "RanDOM, RAndom, ...",
-        }.to_string()
+        }
+        .to_string()
     }
 }

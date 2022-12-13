@@ -1,29 +1,32 @@
-use ccase;
-use convert_case::{Boundary, Case, Casing, Pattern, Converter};
 use clap::ArgMatches;
+use convert_case::{Boundary, Case, Converter, Pattern};
 use std::env;
 use std::io::{self, Read};
 
 fn main() {
     let mut app = ccase::build_app();
-            
-    let missing_error = app.error(clap::error::ErrorKind::MissingRequiredArgument, 
+
+    let missing_error = app.error(
+        clap::error::ErrorKind::MissingRequiredArgument,
         "The following required arguments were not provided:\n  \
-            \x1b[32m<input>...\x1b[m");
+            \x1b[32m<input>...\x1b[m",
+    );
 
     let args = get_args_with_stdin();
 
     let matches = app.get_matches_from(args);
 
     let inputs = match matches.get_many::<String>("input") {
-        None => if atty::isnt(atty::Stream::Stdin) {
-            Default::default()
-        } else {
-            missing_error.exit();
+        None => {
+            if atty::isnt(atty::Stream::Stdin) {
+                Default::default()
+            } else {
+                missing_error.exit();
+            }
         }
         Some(inputs) => inputs,
     };
-    
+
     /*
     inputs.for_each(|input| {
         println!("{:?}", input);
@@ -56,15 +59,13 @@ fn get_args_with_stdin() -> Vec<String> {
 }
 
 fn convert(matches: &ArgMatches, input: &String) {
-
     // check if from or boundaries or none
-    
+
     let mut conv = Converter::new();
 
     if let Some(&from) = matches.get_one::<Case>("from") {
         // --from
         conv = conv.from_case(from);
-
     } else if let Some(boundary_str) = matches.get_one::<String>("boundaries") {
         // --boundaries
         let boundaries = Boundary::list_from(boundary_str.as_str());
@@ -74,7 +75,6 @@ fn convert(matches: &ArgMatches, input: &String) {
     if let Some(&to) = matches.get_one::<Case>("to") {
         // --to
         conv = conv.to_case(to);
-
     } else if let Some(&pattern) = matches.get_one::<Pattern>("pattern") {
         // --pattern
         conv = conv.set_pattern(pattern);
@@ -94,10 +94,7 @@ mod test {
     use predicates::str::contains;
 
     fn ccase(args: &[&str]) -> Assert {
-        Command::cargo_bin("ccase")
-            .unwrap()
-            .args(args)
-            .assert()
+        Command::cargo_bin("ccase").unwrap().args(args).assert()
     }
 
     #[test]
@@ -158,10 +155,11 @@ mod test {
             .stderr(contains("--delimeter <string>"));
     }
 
+    #[test]
     fn delimeter() {
         ccase(&["-p", "sentence", "-d", ".", "myVarName"])
             .success()
-            .stdout("My.var.name");
+            .stdout("My.var.name\n");
     }
 
     #[ignore] // atty is tricked in test, look at ccase -t snake manually
@@ -175,9 +173,7 @@ mod test {
 
     #[test]
     fn help_default() {
-        ccase(&[])
-            .failure()
-            .stderr(contains("Usage"));
+        ccase(&[]).failure().stderr(contains("Usage"));
     }
 
     #[test]
@@ -222,9 +218,7 @@ mod test {
 
     #[test]
     fn empty_string_input() {
-        ccase(&["-t", "snake", r#""#])
-            .success()
-            .stdout("\n");
+        ccase(&["-t", "snake", r#""#]).success().stdout("\n");
     }
 
     #[test]
@@ -263,7 +257,7 @@ mod test {
                 .write_stdin(stdin)
                 .assert()
         }
-        
+
         #[test]
         fn stdin() {
             pipe_ccase("myVarName", &["-t", "snake"])
@@ -280,9 +274,7 @@ mod test {
 
         #[test]
         fn empty() {
-            pipe_ccase(r#""#, &["-t", "snake"])
-                .success()
-                .stdout("");
+            pipe_ccase(r#""#, &["-t", "snake"]).success().stdout("");
         }
 
         #[test]
