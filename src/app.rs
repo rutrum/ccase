@@ -17,14 +17,16 @@ pub fn build() -> Command {
 fn usage() -> StyledStr {
     StyledStr::from(
         "\x1b[1mccase --to\x1b[0m <case> <input>...\n       \
-         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>...\n       \
-         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--boundaries\x1b[0m <string> <input>...",
+         \x1b[1mccase --to\x1b[0m <case> \x1b[1m--from\x1b[0m <case> <input>...",
     )
 }
 
 fn after_long_help() -> StyledStr {
     let s = format!(
-        "\x1b[1;4mCases:\x1b[0m\n\
+        "\x1b[1;4mCase Conversion:\x1b[0m\n  \
+        Visit the code repository at https://github.com/rutrum/ccase for a full description\n  \
+        on how strings are converted using boundaries, patterns, and delimeters.\n\n\
+        \x1b[1;4mCases:\x1b[0m\n\
         {}\n\
         \x1b[1;4mPatterns:\x1b[0m\n\
         {}\n\
